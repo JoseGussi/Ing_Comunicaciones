@@ -2,16 +2,17 @@
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
 #include <ArduinoJson.h>
-#include "esp_camera.h"
+
 
 
 int DISTANCIA = 0;
 int pinEco=12;
 int triggerPin=13;
 int contador = 0;
+int Buzzer = 14;
 
-const char* ssid = "iPhone";
-const char* password = "armando24";
+const char* ssid = "Redmi 10";
+const char* password = "enfacundi";
 
 
 
@@ -84,6 +85,8 @@ void handleNewMessages(int numNewMessages, int distancia) {
 
 void setup() {
   Serial.begin(115200);
+  pinMode(Buzzer, OUTPUT);
+  
 
   // Conecta a red WiFi con SSID y password
   Serial.print("Conectado a ");
@@ -115,15 +118,30 @@ void loop() {
   Serial.println(DISTANCIA);
   delay(100);
 
-  if (DISTANCIA<=100 || DISTANCIA >= 140) 
+  if (DISTANCIA<=50 || DISTANCIA >= 100) 
   {
-    if(contador <=4){
+    if(contador <=5){
 
     
       bot.sendMessage(CHAT_ID, "Alguien entró", "");
       Serial.print("La distancia es: ");
       Serial.println(DISTANCIA);
       contador+=1;
+    }
+    if(contador>3){
+      Serial.println("ALARMA!!! WIUUU WIUUU WIUUU");
+      digitalWrite(Buzzer, HIGH);
+      delay(500);
+      digitalWrite(Buzzer, LOW);
+      delay(500);
+      digitalWrite(Buzzer, HIGH);
+      delay(500);
+      digitalWrite(Buzzer, LOW);
+      delay(500);
+      digitalWrite(Buzzer, HIGH);
+      delay(500);
+      digitalWrite(Buzzer, LOW);
+      
     }
   }
 

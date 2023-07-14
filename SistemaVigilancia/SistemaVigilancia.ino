@@ -1,7 +1,6 @@
-// Creado ChepeCarlos
-// Tutorial Completo en https://nocheprogramacion.com
-// Canal Youtube https://youtube.com/alswnet?sub_confirmation=1
-
+// Creado por  Jose_Gussi
+//Decription>> Telegram bot para el control de un sistema de la alarma con  un microcontrolador esp32 
+// 
 template<class T> inline Print &operator <<(Print &obj, T arg) {
   obj.print(arg);
   return obj;
@@ -16,11 +15,16 @@ template<class T> inline Print &operator <<(Print &obj, T arg) {
 CTBot miBot;
 CTBotInlineKeyboard miTeclado;
 
-#include "token.h"
-
+#include "token_ejemplo.h"
 int Led = 2;
-int Buzzer = 5;
+int Buzzer = 14;
 int Sensor = 4;
+
+
+int DISTANCIA = 0;
+int pinEco=12;
+int triggerPin=13;
+int contador = 0;
 
 float tiempo = 0;
 float espera = 60;
@@ -48,6 +52,7 @@ void setup() {
 
   pinMode(Led, OUTPUT);
   pinMode(Sensor, INPUT);
+  pinMode(Buzzer, OUTPUT);
 
   miBot.wifiConnect(ssid, password);
 
@@ -63,7 +68,7 @@ void setup() {
   miTeclado.addButton("Sonido", "sonido", CTBotKeyboardButtonQuery);
   miTeclado.addButton("Estado", "estado", CTBotKeyboardButtonQuery);
   miTeclado.addRow();
-  miTeclado.addButton("mira documentación", "https://nocheprogramacion.com/telegrambot", CTBotKeyboardButtonURL);
+  miTeclado.addButton("mira documentación", "", CTBotKeyboardButtonURL);
 
   miBot.sendMessage(IDchat, "En Linea, Sistema Vigilancia:" + nombre);
   tiempo = -espera * 1000;
@@ -140,12 +145,12 @@ void SistemaAlarma() {
         Serial.println("Enviando Alerta");
         digitalWrite(Led, LOW);
         if (Sonido) {
-          tone(Buzzer, 1000);
+          digitalWrite(Buzzer, HIGH);
         }
         miBot.sendMessage(IDchat, "Alerta Camara: " + nombre);
         delay(1000);
         digitalWrite(Led, HIGH);
-        noTone(Buzzer);
+        digitalWrite(Buzzer, LOW);
         tiempo = millis();
       }
     }
